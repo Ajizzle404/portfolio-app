@@ -4,19 +4,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-        - name: checkout code
-          uses: actions/checkout@v4  
-        - name: build image
+        - name: git checkout
+          uses: actions/checkout@v4
+        - name: Build Docker image
           run: docker build -t ${{ secrets.DOCKER_USERNAME }}/ciportfolio .
-        - name: DOCKER LOGIN
+        - name: Docker login
           uses: docker/login-action@v4
           with:
-            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            username: ${{ secrets.DOCKER_USERNAME }}
             password: ${{ secrets.DOCKER_PASSWORD }}
-
-        - name: push image TO REGISTRY
+        - name: push image to registry
           run: docker push ${{ secrets.DOCKER_USERNAME }}/ciportfolio
-
           
           
           
