@@ -1,15 +1,12 @@
 name: Build and Push to ECR
 
-
 on:
   push:
     branches: [main]
 
-
 permissions:
   id-token: write
   contents: read
-
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
@@ -20,18 +17,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
-
       - name: Login to ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
-
 
       - name: Build, tag, push
         env:
@@ -52,11 +46,9 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-
       - name: Login to ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
-
 
       - name: Scan image with Trivy
         uses: aquasecurity/trivy-action@master
@@ -65,7 +57,6 @@ jobs:
           format: table
           exit-code: '0'
           severity: CRITICAL,HIGH      
-
   deploy-ecs:
     needs: scan-image
     runs-on: ubuntu-latest
@@ -76,10 +67,9 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-
       - name: Deploy to ECS
         run: |
           aws ecs update-service \
             --cluster ${{ secrets.ECS_CLUSTER }} \
             --service ${{ secrets.ECS_SERVICE }} \
-            --force-new-deployment  
+            --force-new-deployment
